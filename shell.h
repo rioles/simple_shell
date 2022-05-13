@@ -1,33 +1,61 @@
-#ifndef _SHELL_H_
-#define _SHELL_H_
+#ifndef SHELL_H
+#define SHELL_H
+
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <sys/wait.h>
-#include <fcntl.h>
-#include <limits.h>
+#include <sys/stat.h>
 #include <time.h>
+#include <stdbool.h>
 
+/* environment variables */
 extern char **environ;
+extern __sighandler_t signal(int __sig, __sighandler_t __handler);
 
-int _strcmp(char *str1, char *str2);
-int verify_path(char **arguments);
-char *_strdup(char *str);
-char *append_command(char *dir_path, char *command);
-int exec(char **arguments);
-int fill_args(char *entry, char **arguments);
-int print_numbers(int n);
-int _strlen(const char *string);
-int print_not_found(char **arguments, int counter);
-char *_getenv(char *global_var);
-int _printp(const char *prompt, unsigned int size);
-int _putchar(char c);
-int exist(char *pathname);
-void free_grid(char **grid, int heigth);
-void last_free(char *entry);
-int verify_blt(char **arguments, int exit_stat);
+/* handle built ins */
+int checker(char **cmd, char *buf);
+void prompt_user(void);
+void handle_signal(int m);
+char **tokenizer(char *line);
+char *test_path(char **path, char *command);
+char *append_path(char *path, char *command);
+int handle_builtin(char **command, char *line);
+void exit_cmd(char **command, char *line);
 
-#endif
+void print_env(void);
+
+/* string handlers */
+int _strcmp(char *s1, char *s2);
+int _strlen(char *s);
+int _strncmp(char *s1, char *s2, int n);
+char *_strdup(char *s);
+char *_strchr(char *s, char c);
+
+void execution(char *cp, char **cmd);
+char *find_path(void);
+
+/* helper function for efficient free */
+void free_buffers(char **buf);
+
+struct builtin
+{
+	char *env;
+	char *exit;
+} builtin;
+
+struct info
+{
+	int final_exit;
+	int ln_count;
+} info;
+
+struct flags
+{
+	bool interactive;
+} flags;
+
+#endif /* SHELL_H */
